@@ -1,0 +1,36 @@
+version: "3"
+
+volumes:
+  f4w_trainingbb_mysql_var_2:
+  f4w_trainingbb_mysql_etc_2:
+  f4w_trainingbb_moodle_etc_2:
+  f4w_trainingbb_moodle_moodle_2:
+  f4w_trainingbb_moodle_moodledata_2:
+
+services:
+  f4w_trainingbb_mysql_2:
+    build: ./TRAINING_BB_MYSQL
+    image: f4w/training_bb_mysql_2
+    restart: always
+    ports: 
+      - "9309:3306"
+    volumes:
+      - f4w_trainingbb_mysql_var_2:/var/lib/mysql
+      - f4w_trainingbb_mysql_etc_2:/etc
+    networks:
+      - default
+  f4w_trainingbb_moodle_2:
+    build: ./TRAINING_BB_MOODLE
+    image: f4w/training_bb_moodle_2
+    restart: always
+    depends_on:
+      - f4w_trainingbb_mysql_2
+    ports: 
+      - "8782:80"
+      - "9446:443"
+    volumes:
+      - f4w_trainingbb_moodle_moodledata_2:/var/moodledata
+      - f4w_trainingbb_moodle_moodle_2:/var/www/html/moodle
+      - f4w_trainingbb_moodle_etc_2:/etc
+    networks:
+      - default
